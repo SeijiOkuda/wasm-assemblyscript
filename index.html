@@ -10,8 +10,35 @@
 
     function calculatePrimeFactors() {
       const input = document.getElementById("numberInput").value;
-      const result = primeFactors(parseInt(input));
-      document.getElementById("result").innerText = result.join(", ");
+      const number = parseInt(input);
+
+      // Measure Wasm execution time
+      const wasmStart = performance.now();
+      const wasmResult = primeFactors(number);
+      const wasmEnd = performance.now();
+      const wasmTime = wasmEnd - wasmStart;
+
+      // Measure JS execution time
+      const jsStart = performance.now();
+      const jsResult = primeFactorsJS(number);
+      const jsEnd = performance.now();
+      const jsTime = jsEnd - jsStart;
+
+      document.getElementById("wasmResult").innerText = wasmResult.join(", ");
+      document.getElementById("wasmTime").innerText = wasmTime.toFixed(5) + " ms";
+      document.getElementById("jsResult").innerText = jsResult.join(", ");
+      document.getElementById("jsTime").innerText = jsTime.toFixed(5) + " ms";
+    }
+
+    function primeFactorsJS(n) {
+      let factors = [];
+      for (let i = 2; i <= n; i++) {
+        while (n % i === 0) {
+          factors.push(i);
+          n /= i;
+        }
+      }
+      return factors;
     }
 
     document.getElementById("calculateButton").addEventListener("click", calculatePrimeFactors);
@@ -27,7 +54,18 @@
           <input type="number" id="numberInput" class="form-control" placeholder="Enter a number">
         </div>
         <button id="calculateButton" class="btn btn-primary btn-block">Calculate Prime Factors</button>
-        <div id="result" class="mt-3"></div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <h3>Wasm</h3>
+            <p id="wasmResult"></p>
+            <p id="wasmTime"></p>
+          </div>
+          <div class="col-md-6">
+            <h3>JavaScript</h3>
+            <p id="jsResult"></p>
+            <p id="jsTime"></p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
