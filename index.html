@@ -8,19 +8,20 @@
   <script type="module">
     import { primeFactors } from "./build/release.js";
 
-    function calculatePrimeFactors() {
+    async function calculatePrimeFactors() {
       const input = document.getElementById("numberInput").value;
       const number = parseInt(input);
 
       // Measure Wasm execution time
+      await initializeWasm();
       const wasmStart = performance.now();
-      const wasmResult = primeFactors(number);
+      const wasmResult = await primeFactors(number);
       const wasmEnd = performance.now();
       const wasmTime = wasmEnd - wasmStart;
 
       // Measure JS execution time
       const jsStart = performance.now();
-      const jsResult = primeFactorsJS(number);
+      const jsResult = await primeFactorsJS(number);
       const jsEnd = performance.now();
       const jsTime = jsEnd - jsStart;
 
@@ -30,7 +31,7 @@
       document.getElementById("jsTime").innerText = jsTime.toFixed(5) + " ms";
     }
 
-    function primeFactorsJS(n) {
+    async function primeFactorsJS(n) {
       let factors = [];
       for (let i = 2; i <= n; i++) {
         while (n % i === 0) {
@@ -39,6 +40,10 @@
         }
       }
       return factors;
+    }
+
+    async function initializeWasm() {
+      await primeFactors(1); // ダミー呼び出しで初期化
     }
 
     document.getElementById("calculateButton").addEventListener("click", calculatePrimeFactors);
