@@ -1,4 +1,6 @@
 import assert from "assert";
-import { add } from "../build/debug.js";
-assert.strictEqual(add(1, 2), 3);
+import { primeFactors } from "../build/debug.js";
+
+assert.deepStrictEqual(primeFactors(28), [2, 2, 7]);
+assert.deepStrictEqual(primeFactors(30), [2, 3, 5]);
 console.log("ok");
